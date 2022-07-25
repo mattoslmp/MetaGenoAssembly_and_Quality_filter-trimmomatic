@@ -15,7 +15,7 @@ ls * | grep "R1" >> filename.txt
 input="/short/du5/lm1947/TESTE-script/filename.txt"
 
 metaspades="-o results_ASSEMBLY -m 800 -k auto --phred-offset auto"
-data='/short/du5/lm1947/dataset_helena/'
+data='/short/du5/lm1947/data'
 
 
 while IFS= read -r line
@@ -30,4 +30,3 @@ for r1 in $line; do
       #echo file: $dir$r1 $dir$r2
    metaspades.py -1 $data/$r1 -2 $data/$r2 $metaspades
 done
-
