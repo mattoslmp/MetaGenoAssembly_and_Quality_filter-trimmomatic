@@ -1,0 +1,47 @@
+### Autor: Leandro de Mattos Pereira, PhD, Computational Biologist.
+### Supervisora: PhD, Gisele Lopes Nunes
+#PBS -l nodes=1:ppn=24
+#PBS -l walltime=200:00:00
+#PBS -N job_code.kaiju_step_3
+#PBS -o job_code.kaiju_step_3.log
+
+
+CORES=$[ `cat $PBS_NODEFILE | wc -l` ]
+NODES=$[ `uniq $PBS_NODEFILE | wc -l` ]
+
+printf "Inico: `date`\n";
+TBEGIN=`echo "print time();" | perl`
+
+#PBS -d ./
+### Especificar abaixo em cd o caminho onde estao o output do kaiju .out e .out.names: no meu caso databases
+
+cd /bio_temp/c0232/Projetos/lakes-canga/assemblies/all_assemblies/
+
+######################################## Especificar em filenames os fastas: Scaffolds obtidos pelo Spades
+############################# 
+input="/bio_temp/c0232/Projetos/lakes-canga/assemblies/all_assemblies/filenames.txt"
+# Input is a List with name of files.
+
+while IFS= read -r line
+do
+for r1 in $line; do
+   kaiju-addTaxonNames -t /bio_temp/share_bio/softwares/kaiju/kaiju-db-nr_euk/nodes.dmp -n /bio_temp/share_bio/softwares/kaiju/kaiju-db-nr_euk/names.dmp -r phylum,class,order,family,genus,species -i $r1.kaiju -o $r1.names.kaiju
+done
+done < "$input"
+
+printf "\n"
+printf "> Executando job_code7\n";
+printf "> Rodando em $CORES nucleos, em $NODES nos\n"
+cd $PBS_O_WORKDIR
+
+ulimit -s unlimited
+
+sleep 45
+
+TEND=`echo "print time();" | perl`
+
+printf "\n"
+printf "Fim: `date`\n";
+printf "Tempo decorrido (s): `expr $TEND - $TBEGIN`\n";
+printf "Tempo decorrido (min): `expr $(( ($TEND - $TBEGIN)/60 ))`\n";
+echo "TERMINADO"
